@@ -58,7 +58,7 @@ pub trait FlashAlgorithm: Sized + 'static {
     ///
     /// * `address` - The start address of the flash page to program.
     /// * `data` - The data to be written to the page.
-    fn program_page(&mut self, address: u32, data: &[u8]) -> Result<(), ErrorCode>;
+    fn program_page(&mut self, address: u32, data: &mut [u8]) -> Result<(), ErrorCode>;
 
     /// Verify the firmware that has been programmed.  Will only be called after [`FlashAlgorithm::new()`] with [`Function::Verify`].
     ///
@@ -149,12 +149,12 @@ macro_rules! algorithm {
         }
         #[no_mangle]
         #[link_section = ".entry"]
-        pub unsafe extern "C" fn ProgramPage(addr: u32, size: u32, data: *const u8) -> u32 {
+        pub unsafe extern "C" fn ProgramPage(addr: u32, size: u32, data: *mut u8) -> u32 {
             if !_IS_INIT {
                 return 1;
             }
             let this = &mut *_ALGO_INSTANCE.as_mut_ptr();
-            let data_slice: &[u8] = unsafe { core::slice::from_raw_parts(data, size as usize) };
+            let data_slice: &mut [u8] = unsafe { core::slice::from_raw_parts_mut(data, size as usize) };
             match <$type as $crate::FlashAlgorithm>::program_page(this, addr, data_slice) {
                 Ok(()) => 0,
                 Err(e) => e.get(),

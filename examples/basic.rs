@@ -40,7 +40,7 @@ impl FlashAlgorithm for Algorithm {
     fn program_page(
         &mut self,
         _address: u32,
-        _data: &[u8],
+        _data: &mut [u8],
     ) -> Result<(), flash_algorithm::ErrorCode> {
         todo!()
     }
