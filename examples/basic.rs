@@ -45,6 +45,7 @@ impl FlashAlgorithm for Algorithm {
         todo!()
     }
 
+    #[cfg(feature = "verify")]
     fn verify(
         &mut self,
         _address: u32,
