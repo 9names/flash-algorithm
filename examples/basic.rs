@@ -29,6 +29,7 @@ impl FlashAlgorithm for Algorithm {
         todo!()
     }
 
+    #[cfg(feature = "erase-chip")]
     fn erase_all(&mut self) -> Result<(), flash_algorithm::ErrorCode> {
         todo!()
     }
